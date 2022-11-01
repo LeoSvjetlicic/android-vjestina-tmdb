@@ -16,15 +16,17 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun UserScoreProgressBar(
     modifier: Modifier = Modifier,
-    score:Float
-){
-    Box(modifier = Modifier
-        .width(50.dp)
-        .height(50.dp),
-        contentAlignment = Alignment.Center){
-        Canvas(modifier = Modifier.fillMaxSize(0.93f)){
+    score: Float
+) {
+    Box(
+        modifier = modifier
+            .width(50.dp)
+            .height(50.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize(0.93f)) {
             drawCircle(
-                color = Color(red=120,green= 150,blue=50),
+                color = Color(red = 120, green = 150, blue = 50),
                 style = Stroke(
                     width = 8f,
                 )

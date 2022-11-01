@@ -21,45 +21,58 @@ import androidx.constraintlayout.widget.Placeholder
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 
+data class ActorCardViewState(
+    val imageUrl: String?,
+    val name: String,
+    val character: String,
+)
+
 @Composable
 fun ActorCard(
-    actorCardViewState: Actor,
+    actorCardViewState: ActorCardViewState,
     modifier: Modifier = Modifier,
 ) {
-    Card(modifier = Modifier
-        .width(140.dp)
-        .height(200.dp)
-        .padding(10.dp),
-        shape= RoundedCornerShape(10.dp)){
-        Column{
+    Card(
+        modifier = modifier
+            .padding(10.dp),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        Column {
             AsyncImage(
                 model = actorCardViewState.imageUrl,
                 contentDescription = null,
                 modifier = Modifier.height(125.dp),
                 contentScale = ContentScale.Crop,
             )
-            Text(text = actorCardViewState.name,
-                modifier=Modifier
-                    .padding(start=10.dp,end=30.dp,top=5.dp)
-                    .width(60.dp),
-                fontSize=10.sp,
-                fontWeight=FontWeight.Bold,
-                color= Color.Black)
-
-            Text(text = actorCardViewState.character,
-                modifier=Modifier.width(100.dp)
-                    .padding(start=10.dp,end=10.dp,top=5.dp,bottom=5.dp)
-                    .width(100.dp),
-                fontSize=8.sp,
-                color= Color.DarkGray
+            Text(
+                text = actorCardViewState.name,
+                modifier = Modifier
+                    .padding(start = 10.dp, end = 30.dp, top = 5.dp),
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+            Text(
+                text = actorCardViewState.character,
+                modifier = Modifier
+                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
+                fontSize = 8.sp,
+                color = Color.DarkGray
             )
         }
     }
 }
+
 @Preview
 @Composable
 private fun ActorCardPreview() {
     val actor = MoviesMock.getActor()
-    ActorCard(actorCardViewState = actor)
+    val modifier = Modifier
+        .width(140.dp)
+        .height(200.dp)
+    ActorCard(
+        actorCardViewState = ActorCardViewState(actor.imageUrl, actor.name, actor.character),
+        modifier
+    )
 }
 

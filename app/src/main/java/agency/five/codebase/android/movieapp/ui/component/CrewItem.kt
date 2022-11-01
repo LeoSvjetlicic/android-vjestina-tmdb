@@ -18,32 +18,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun crewItem(
+fun CrewItem(
     crewItemViewState: Crewman,
-    modifier: Modifier =Modifier,
-){
-        Column{
-            Text(text = crewItemViewState.name,
-                modifier= Modifier
-                    .width(100.dp)
-                    .padding(start=5.dp,end=30.dp,top=5.dp),
-                fontSize=10.sp,
-                fontWeight= FontWeight.Bold,
-                color= Color.Black)
-
-            Text(text = crewItemViewState.job,
-                modifier= Modifier.width(100.dp)
-                    .padding(start=5.dp,end=10.dp,top=5.dp,bottom=5.dp)
-                    .width(100.dp),
-                fontSize=8.sp,
-                color= Color.Black
-            )
-        }
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = crewItemViewState.name,
+            modifier = Modifier
+                .padding(start = 5.dp, end = 30.dp, top = 5.dp),
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
+        Text(
+            text = crewItemViewState.job,
+            modifier = Modifier
+                .padding(start = 5.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
+            fontSize = 8.sp,
+            color = Color.Black
+        )
+    }
 }
+
 @Preview
 @Composable
 private fun CrewItemPreview() {
     val crewman = MoviesMock.getCrewman()
-
-    crewItem(crewItemViewState=crewman )
+    CrewItem(crewItemViewState = crewman)
 }
