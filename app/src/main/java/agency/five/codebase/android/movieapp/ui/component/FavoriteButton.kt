@@ -1,7 +1,6 @@
 package agency.five.codebase.android.movieapp.ui.component
 
 import agency.five.codebase.android.movieapp.R
-import android.widget.NumberPicker.OnValueChangeListener
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,13 +19,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColor
+import okhttp3.internal.notify
 
 @Composable
 fun FavoriteButton(
-    modifier: Modifier = Modifier,
-    isFavorite: Boolean = false,
-    onClick: (Boolean) -> Unit,
+    modifier: Modifier,
+    isFavorite: Boolean,
+    onFavoriteButtonClick: () -> Unit,
 ) {
     Image(
         painter = painterResource(
@@ -37,7 +36,7 @@ fun FavoriteButton(
             .size(40.dp)
             .background(Color.Gray.copy(0.7f), CircleShape)
             .padding(5.dp)
-            .clickable { onClick(isFavorite.not()) },
+            .clickable { onFavoriteButtonClick() },
         contentScale = ContentScale.Fit,
     )
 }
@@ -45,9 +44,13 @@ fun FavoriteButton(
 @Preview
 @Composable
 private fun FavoriteButtonPreview() {
-    val isFavorite = remember { mutableStateOf(false) }
-    FavoriteButton(isFavorite = isFavorite.value) {
-        isFavorite.value = it
+    var isFavorite = remember {
+        mutableStateOf(false)
     }
+    FavoriteButton(
+        modifier = Modifier,
+        onFavoriteButtonClick = { isFavorite.value = isFavorite.value.not() },
+        isFavorite = isFavorite.value,
+    )
 
 }

@@ -18,10 +18,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import okhttp3.internal.notify
 
 data class MovieCategoryLabelViewState(
     val itemId: Int,
-    var isSelected: MutableState<Boolean>,
+    val isSelected: Boolean,
     val categoryText: MovieCategoryLabelTextViewState
 )
 
@@ -34,13 +35,12 @@ sealed class MovieCategoryLabelTextViewState {
 fun MovieCategoryLabel(
     labelViewState: MovieCategoryLabelViewState,
     modifier: Modifier,
-    isSelected: Boolean = false,
-    onClick: (Boolean) -> Unit
+    onClick: () -> Unit
 ) {
-    Box(modifier = modifier) {
-        if (isSelected) {
+    Box(modifier = modifier.clickable { onClick() }) {
+        if (labelViewState.isSelected) {
             Text(
-                modifier = Modifier.clickable { onClick(isSelected.not()) },
+                modifier = Modifier,
                 style = TextStyle(textDecoration = TextDecoration.Underline),
                 text = getTextSource(labelViewState = labelViewState),
                 fontSize = 16.sp,
@@ -48,7 +48,7 @@ fun MovieCategoryLabel(
                 )
         } else {
             Text(
-                modifier = Modifier.clickable { onClick(isSelected.not()) },
+                modifier = Modifier,
                 text = getTextSource(labelViewState = labelViewState),
                 fontSize = 16.sp,
                 color = Color.Gray
@@ -70,18 +70,16 @@ fun getTextSource(labelViewState: MovieCategoryLabelViewState): String {
 @Preview
 @Composable
 private fun MovieCategoryLabelPreview() {
-
+    var isSelected = remember {
+        mutableStateOf(false)
+    }
     val textFromString = MovieCategoryLabelTextViewState.StringToLabelText("Movies")
     val labelViewState =
-        MovieCategoryLabelViewState(1, remember { mutableStateOf(true) }, textFromString)
+        MovieCategoryLabelViewState(1, false, textFromString)
 
-    Column() {
-        MovieCategoryLabel(
-            labelViewState = labelViewState,
-            modifier = Modifier,
-            isSelected = labelViewState.isSelected.value
-        ) {
-            labelViewState.isSelected.value = it
-        }
-    }
+    MovieCategoryLabel(
+        labelViewState = labelViewState,
+        modifier = Modifier,
+        onClick = {}
+    )
 }

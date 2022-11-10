@@ -20,19 +20,20 @@ data class MovieViewState(
     val title: String,
     val overview: String,
     val imageUrl: String?,
-    var isFavorite: MutableState<Boolean>
+    val isFavorite: Boolean
 )
 
 @Composable
 fun Movie(
     movie: MovieViewState,
-    onClick: () -> Unit,
+    onMovieCardClick: () -> Unit,
+    onFavoriteButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .padding(10.dp)
-            .clickable { onClick },
+            .clickable { onMovieCardClick() },
         shape = RoundedCornerShape(10.dp)
     ) {
         AsyncImage(
@@ -42,11 +43,10 @@ fun Movie(
             contentScale = ContentScale.Crop,
         )
         FavoriteButton(
-            isFavorite = movie.isFavorite.value,
-            modifier = Modifier.padding(5.dp)
-        ) {
-            movie.isFavorite.value = it
-        }
+            isFavorite = movie.isFavorite,
+            modifier = Modifier.padding(5.dp),
+            onFavoriteButtonClick = onFavoriteButtonClick
+        )
     }
 }
 
@@ -58,9 +58,7 @@ fun MovieCardPreview() {
         title = movie.title,
         overview = movie.overview,
         imageUrl = movie.imageUrl,
-        isFavorite = remember {
-            mutableStateOf(movie.isFavorite)
-        },
+        isFavorite = movie.isFavorite
     )
-    Movie(movie = movieViewState, onClick = {})
+    Movie(movie = movieViewState, onMovieCardClick = {}, onFavoriteButtonClick = {})
 }
