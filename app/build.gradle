@@ -67,5 +67,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     def nav_version = "2.5.3"
-    implementation "androidx.agency.five.codebase.android.movieapp.navigation:agency.five.codebase.android.movieapp.navigation-compose:$nav_version"
+    implementation "androidx.navigation:navigation-compose:$nav_version"
 }
