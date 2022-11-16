@@ -37,7 +37,7 @@ fun ActorCard(
             .padding(10.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
-        Column {
+        Column(modifier = modifier) {
             AsyncImage(
                 model = actorCardViewState.imageUrl,
                 contentDescription = null,
