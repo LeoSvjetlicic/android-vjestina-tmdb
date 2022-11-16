@@ -1,4 +1,4 @@
-package navigation
+package agency.five.codebase.android.movieapp.navigation
 
 const val MOVIE_DETAILS_ROUTE = "MovieDetails"
 const val MOVIE_ID_KEY = "movieId"

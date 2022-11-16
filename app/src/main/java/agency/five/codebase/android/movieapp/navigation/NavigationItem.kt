@@ -1,4 +1,4 @@
-package navigation
+package agency.five.codebase.android.movieapp.navigation
 
 import agency.five.codebase.android.movieapp.R
 

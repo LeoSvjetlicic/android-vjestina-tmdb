@@ -28,9 +28,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import coil.compose.AsyncImage
-import navigation.MOVIE_ID_KEY
-import navigation.MovieDetailsDestination
-import navigation.NavigationItem
+import agency.five.codebase.android.movieapp.navigation.MOVIE_ID_KEY
+import agency.five.codebase.android.movieapp.navigation.MovieDetailsDestination
+import agency.five.codebase.android.movieapp.navigation.NavigationItem
 
 @SuppressLint("RememberReturnType")
 @Composable
