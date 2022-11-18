@@ -6,7 +6,7 @@ import agency.five.codebase.android.movieapp.ui.favorites.FavoritesMovieViewStat
 import agency.five.codebase.android.movieapp.ui.favorites.FavoritesViewState
 
 class FavoritesMapperImpl : FavoritesMapper {
-    var favoritesMovieViewState = mutableListOf<FavoritesMovieViewState>()
+    private var favoritesMovieViewState = mutableListOf<FavoritesMovieViewState>()
     override fun toFavoritesViewState(favoriteMovies: List<Movie>): FavoritesViewState {
         for (movie in favoriteMovies) {
             var movieCardViewState =

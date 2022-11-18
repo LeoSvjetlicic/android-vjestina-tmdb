@@ -22,6 +22,7 @@ import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 
 data class ActorCardViewState(
+    val id:Int,
     val imageUrl: String?,
     val name: String,
     val character: String,
@@ -71,7 +72,7 @@ private fun ActorCardPreview() {
         .width(140.dp)
         .height(200.dp)
     ActorCard(
-        actorCardViewState = ActorCardViewState(actor.imageUrl, actor.name, actor.character),
+        actorCardViewState = ActorCardViewState(actor.id ,actor.imageUrl, actor.name, actor.character),
         modifier
     )
 }

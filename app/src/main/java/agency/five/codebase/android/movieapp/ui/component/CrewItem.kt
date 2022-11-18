@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 data class CrewItemViewState(
+    val id: Int,
     val name: String,
     val job: String,
 )
@@ -50,5 +51,5 @@ fun CrewItem(
 @Composable
 private fun CrewItemPreview() {
     val crewMan = MoviesMock.getCrewman()
-    CrewItem(crewItemViewState = CrewItemViewState(crewMan.name, crewMan.job))
+    CrewItem(crewItemViewState = CrewItemViewState(crewMan.id,crewMan.name, crewMan.job))
 }

@@ -38,9 +38,7 @@ fun FavoritesRoute(
             .padding(10.dp),
         favoritesViewState = favorites,
         onFavoriteButtonClick = { onFavoriteButtonClick() },
-        onMovieCardClick = { onMovieCardClick() }) {
-
-    }
+        onMovieCardClick = { onMovieCardClick() })
 }
 
 @Composable
@@ -49,7 +47,6 @@ fun FavoritesScreen(
     favoritesViewState: FavoritesViewState,
     onFavoriteButtonClick: () -> Unit,
     onMovieCardClick: () -> Unit,
-    onHomeButtonClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -91,7 +88,6 @@ fun FavoritesScreenPreview() {
             modifier = Modifier,
             onFavoriteButtonClick = {},
             onMovieCardClick = {},
-            onHomeButtonClick = {}
         )
     }
 }

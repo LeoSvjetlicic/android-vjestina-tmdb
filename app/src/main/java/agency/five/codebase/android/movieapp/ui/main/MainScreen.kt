@@ -124,6 +124,7 @@ private fun TopBar(
         model = R.drawable.tmdb_logo,
         contentDescription = null,
         modifier = Modifier
+            .fillMaxWidth()
             .background(Color(8, 8, 118))
             .height(50.dp)
             .padding(start = 70.dp, end = 70.dp)

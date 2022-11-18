@@ -108,6 +108,7 @@ fun MovieDetailsScreen(
                         CrewItem(
                             modifier = Modifier,
                             crewItemViewState = CrewItemViewState(
+                                id=crewItems.id,
                                 name = crewItems.name,
                                 job = crewItems.job,
                             )
@@ -125,7 +126,7 @@ fun MovieDetailsScreen(
             }
             item {
                 LazyRow() {
-                    itemsIndexed(movieDetailsViewState.cast) { index, casts ->
+                    itemsIndexed(movieDetailsViewState.cast) { index, _ ->
                         ActorCard(
                             actorCardViewState = movieDetailsViewState.cast[index],
                             modifier = Modifier
