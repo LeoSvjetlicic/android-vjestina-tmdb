@@ -31,16 +31,14 @@ fun CrewItem(
     Column(modifier = modifier) {
         Text(
             text = crewItemViewState.name,
-            modifier = Modifier
-                .padding(start = 5.dp, end = 30.dp, top = 5.dp),
+            modifier = Modifier.padding(start = 5.dp, end = 30.dp, top = 5.dp),
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
         )
         Text(
             text = crewItemViewState.job,
-            modifier = Modifier
-                .padding(start = 5.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
+            modifier = Modifier.padding(start = 5.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
             fontSize = 13.sp,
             color = Color.Black
         )
@@ -51,5 +49,5 @@ fun CrewItem(
 @Composable
 private fun CrewItemPreview() {
     val crewMan = MoviesMock.getCrewman()
-    CrewItem(crewItemViewState = CrewItemViewState(crewMan.id,crewMan.name, crewMan.job))
+    CrewItem(crewItemViewState = CrewItemViewState(crewMan.id, crewMan.name, crewMan.job))
 }

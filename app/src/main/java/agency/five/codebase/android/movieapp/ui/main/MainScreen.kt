@@ -79,9 +79,7 @@ fun MainScreen() {
                 startDestination = NavigationItem.HomeDestination.route,
                 modifier = Modifier.padding(padding)
             ) {
-                composable(
-                    NavigationItem.HomeDestination.route
-                ) {
+                composable(NavigationItem.HomeDestination.route) {
                     HomeRoute(
                         onMovieCardClick = {
                             navController.navigate(
@@ -92,9 +90,7 @@ fun MainScreen() {
                         onFavoriteButtonClick = {}
                     )
                 }
-                composable(
-                    NavigationItem.FavoritesDestination.route
-                ) {
+                composable(NavigationItem.FavoritesDestination.route) {
                     FavoritesRoute(
                         onMovieCardClick = {
                             navController.navigate(
@@ -155,9 +151,7 @@ private fun BottomNavigationBar(
     onNavigateToDestination: (NavigationItem) -> Unit,
     currentDestination: NavDestination?,
 ) {
-    BottomNavigation(
-        backgroundColor = MaterialTheme.colors.background
-    ) {
+    BottomNavigation(backgroundColor = MaterialTheme.colors.background) {
         destinations.forEach { destination ->
             AddItem(
                 destination = destination,
@@ -166,9 +160,7 @@ private fun BottomNavigationBar(
             )
         }
     }
-
 }
-
 
 @Composable
 fun RowScope.AddItem(
@@ -188,8 +180,7 @@ fun RowScope.AddItem(
             Image(
                 modifier = Modifier.fillMaxHeight(0.25F),
                 painter = painterResource(
-                    id =
-                    if (currentDestination?.hierarchy?.any {
+                    id = if (currentDestination?.hierarchy?.any {
                             it.route == destination.route
                         } == true)
                         destination.selectedIconId

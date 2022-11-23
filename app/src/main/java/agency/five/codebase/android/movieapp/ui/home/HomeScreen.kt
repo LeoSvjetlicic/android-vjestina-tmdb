@@ -77,28 +77,28 @@ fun HomeScreen(
     onFavoriteButtonClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-        LazyColumn(modifier = modifier.height(670.dp)) {
-            item {
-                HomeScreenPart(
-                    viewState = popular,
-                    title = stringResource(id = R.string.whats_popular),
-                    modifier = Modifier,
-                    onMovieCardClick = { onMovieCardClick() },
-                    onFavoriteButtonClick = { onFavoriteButtonClick() })
-                HomeScreenPart(
-                    viewState = nowPlaying,
-                    title = stringResource(id = R.string.now_playing),
-                    modifier = Modifier,
-                    onMovieCardClick = { onMovieCardClick() },
-                    onFavoriteButtonClick = { onFavoriteButtonClick() })
-                HomeScreenPart(
-                    viewState = upcoming,
-                    title = stringResource(id = R.string.upcoming),
-                    modifier = Modifier,
-                    onMovieCardClick = { onMovieCardClick() },
-                    onFavoriteButtonClick = { onFavoriteButtonClick() })
-            }
+    LazyColumn(modifier = modifier.fillMaxSize()) {
+        item {
+            HomeScreenPart(
+                viewState = popular,
+                title = stringResource(id = R.string.whats_popular),
+                modifier = Modifier,
+                onMovieCardClick = { onMovieCardClick() },
+                onFavoriteButtonClick = { onFavoriteButtonClick() })
+            HomeScreenPart(
+                viewState = nowPlaying,
+                title = stringResource(id = R.string.now_playing),
+                modifier = Modifier,
+                onMovieCardClick = { onMovieCardClick() },
+                onFavoriteButtonClick = { onFavoriteButtonClick() })
+            HomeScreenPart(
+                viewState = upcoming,
+                title = stringResource(id = R.string.upcoming),
+                modifier = Modifier,
+                onMovieCardClick = { onMovieCardClick() },
+                onFavoriteButtonClick = { onFavoriteButtonClick() })
         }
+    }
 }
 
 @Composable
@@ -112,8 +112,7 @@ fun HomeScreenPart(
     Column(modifier = modifier.padding(10.dp)) {
         Text(
             text = title,
-            modifier = Modifier
-                .padding(10.dp),
+            modifier = Modifier.padding(10.dp),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
@@ -124,27 +123,22 @@ fun HomeScreenPart(
         ) {
             items(
                 items = viewState.movieCategories,
-                key = { category ->
-                    category.itemId
+                key = { category -> category.itemId
                 }
             ) { it ->
                 MovieCategoryLabel(
                     modifier = Modifier.padding(end = 10.dp),
                     labelViewState = it,
-                    onClick = {
-                        onCategoryClick(it)
-                    }
+                    onClick = { onCategoryClick(it) }
                 )
             }
         }
         LazyRow(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
         ) {
             items(
                 items = viewState.movies,
-                key = { movie ->
-                    movie.id
+                key = { movie -> movie.id
                 }
             ) { item ->
                 MovieCard(

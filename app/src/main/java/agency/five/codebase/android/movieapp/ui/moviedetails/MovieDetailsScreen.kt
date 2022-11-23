@@ -34,8 +34,7 @@ private val detailsMapper: MovieDetailsMapper = MovieDetailsMapperImpl()
 val movieDetailsViewState = detailsMapper.toMovieDetailsViewState(MoviesMock.getMovieDetails())
 
 @Composable
-fun MovieDetailsRoute(
-) {
+fun MovieDetailsRoute() {
     val movieDetailsViewState by remember { mutableStateOf(movieDetailsViewState) }
     MovieDetailsScreen(
         movieDetailsViewState = movieDetailsViewState
@@ -44,13 +43,11 @@ fun MovieDetailsRoute(
 
 @Composable
 fun MovieDetailsScreen(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     movieDetailsViewState: MovieDetailsViewState,
 ) {
     Column() {
-        LazyColumn(
-            modifier = modifier.fillMaxSize(),
-        ) {
+        LazyColumn(modifier = modifier.fillMaxSize()) {
             item {
                 Box(modifier = Modifier.fillMaxWidth()) {
                     AsyncImage(
@@ -76,17 +73,20 @@ fun MovieDetailsScreen(
                             .size(50.dp)
                             .align(Alignment.BottomEnd),
                     )
-                    FavoriteButton(modifier = Modifier
-                        .padding(10.dp)
-                        .size(50.dp)
-                        .align(Alignment.BottomStart),
-                        isFavorite = movieDetailsViewState.isFavorite, onFavoriteButtonClick = {})
+                    FavoriteButton(
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .size(50.dp)
+                            .align(Alignment.BottomStart),
+                        isFavorite = movieDetailsViewState.isFavorite,
+                        onFavoriteButtonClick = {}
+                    )
                 }
             }
             item {
                 Text(
-                    text = stringResource(id = R.string.overview_text), modifier = Modifier
-                        .padding(5.dp),
+                    text = stringResource(id = R.string.overview_text),
+                    modifier = Modifier.padding(5.dp),
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -94,8 +94,7 @@ fun MovieDetailsScreen(
             item {
                 Text(
                     text = movieDetailsViewState.overview,
-                    modifier = Modifier
-                        .padding(5.dp),
+                    modifier = Modifier.padding(5.dp),
                     fontSize = 15.sp,
                 )
             }
@@ -108,7 +107,7 @@ fun MovieDetailsScreen(
                         CrewItem(
                             modifier = Modifier,
                             crewItemViewState = CrewItemViewState(
-                                id=crewItems.id,
+                                id = crewItems.id,
                                 name = crewItems.name,
                                 job = crewItems.job,
                             )
@@ -118,8 +117,8 @@ fun MovieDetailsScreen(
             }
             item {
                 Text(
-                    text = stringResource(id = R.string.top_billed_cast_text), modifier = Modifier
-                        .padding(5.dp),
+                    text = stringResource(id = R.string.top_billed_cast_text),
+                    modifier = Modifier.padding(5.dp),
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold
                 )

@@ -31,14 +31,15 @@ fun FavoritesRoute(
     onFavoriteButtonClick: () -> Unit,
     onMovieCardClick: () -> Unit
 ) {
-    val favorites by remember{ mutableStateOf(favoritesViewState) }
+    val favorites by remember { mutableStateOf(favoritesViewState) }
     FavoritesScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(10.dp),
         favoritesViewState = favorites,
         onFavoriteButtonClick = { onFavoriteButtonClick() },
-        onMovieCardClick = { onMovieCardClick() })
+        onMovieCardClick = { onMovieCardClick() }
+    )
 }
 
 @Composable
@@ -49,13 +50,11 @@ fun FavoritesScreen(
     onMovieCardClick: () -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
     ) {
         Text(
             text = stringResource(id = R.string.favorites_text),
-            modifier = Modifier
-                .padding(20.dp),
+            modifier = Modifier.padding(20.dp),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
