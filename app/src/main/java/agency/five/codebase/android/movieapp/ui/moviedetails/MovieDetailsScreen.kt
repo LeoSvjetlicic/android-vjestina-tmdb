@@ -36,9 +36,7 @@ val movieDetailsViewState = detailsMapper.toMovieDetailsViewState(MoviesMock.get
 @Composable
 fun MovieDetailsRoute() {
     val movieDetailsViewState by remember { mutableStateOf(movieDetailsViewState) }
-    MovieDetailsScreen(
-        movieDetailsViewState = movieDetailsViewState
-    )
+    MovieDetailsScreen(movieDetailsViewState = movieDetailsViewState)
 }
 
 @Composable

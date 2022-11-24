@@ -113,9 +113,7 @@ fun MainScreen() {
 }
 
 @Composable
-private fun TopBar(
-    navigationIcon: @Composable (() -> Unit)? = null,
-) {
+private fun TopBar(navigationIcon: @Composable (() -> Unit)? = null, ) {
     AsyncImage(
         model = R.drawable.tmdb_logo,
         contentDescription = null,

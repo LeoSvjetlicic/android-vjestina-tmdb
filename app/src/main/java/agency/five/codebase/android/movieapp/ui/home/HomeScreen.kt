@@ -48,7 +48,6 @@ var upcomingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
     movieCategories = upcoming, selectedMovieCategory = MovieCategory.UPCOMING_TODAY
 )
 
-
 @Composable
 fun HomeRoute(
     onMovieCardClick: () -> Unit,
@@ -123,8 +122,7 @@ fun HomeScreenPart(
         ) {
             items(
                 items = viewState.movieCategories,
-                key = { category -> category.itemId
-                }
+                key = { category -> category.itemId }
             ) { it ->
                 MovieCategoryLabel(
                     modifier = Modifier.padding(end = 10.dp),
@@ -133,13 +131,10 @@ fun HomeScreenPart(
                 )
             }
         }
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
+        LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(
                 items = viewState.movies,
-                key = { movie -> movie.id
-                }
+                key = { movie -> movie.id }
             ) { item ->
                 MovieCard(
                     modifier = Modifier

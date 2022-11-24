@@ -14,14 +14,16 @@ class HomeScreenMapperImpl : HomeScreenMapper {
         selectedMovieCategory: MovieCategory,
         movies: List<Movie>
     ) = HomeMovieCategoryViewState(
-        movieCategories.map { category ->
+        movieCategories = movieCategories.map { category ->
             MovieCategoryLabelViewState(
                 itemId = category.ordinal,
-                categoryText = MovieCategoryLabelTextViewState.ResourceToLabelText(getCategoryStringResource(category)),
+                categoryText = MovieCategoryLabelTextViewState.ResourceToLabelText(
+                    getCategoryStringResource(category)
+                ),
                 isSelected = category == selectedMovieCategory
             )
         },
-        movies.map { movie ->
+        movies = movies.map { movie ->
             HomeMovieViewState(
                 id = movie.id,
                 imageUrl = movie.imageUrl,
@@ -31,16 +33,15 @@ class HomeScreenMapperImpl : HomeScreenMapper {
     )
 }
 
-private fun getCategoryStringResource(category: MovieCategory): Int {
-    return when (category) {
-        MovieCategory.POPULAR_STREAMING -> R.string.streaming
-        MovieCategory.POPULAR_ON_TV -> R.string.on_tv
-        MovieCategory.POPULAR_FOR_RENT -> R.string.for_rent
-        MovieCategory.POPULAR_IN_THEATRES -> R.string.in_theatres
-        MovieCategory.NOW_PLAYING_MOVIES -> R.string.movies_text
-        MovieCategory.NOW_PLAYING_TV -> R.string.tv
-        MovieCategory.UPCOMING_TODAY -> R.string.today
-        MovieCategory.UPCOMING_THIS_WEEK -> R.string.this_week
-    }
+private fun getCategoryStringResource(category: MovieCategory) = when (category) {
+    MovieCategory.POPULAR_STREAMING -> R.string.streaming
+    MovieCategory.POPULAR_ON_TV -> R.string.on_tv
+    MovieCategory.POPULAR_FOR_RENT -> R.string.for_rent
+    MovieCategory.POPULAR_IN_THEATRES -> R.string.in_theatres
+    MovieCategory.NOW_PLAYING_MOVIES -> R.string.movies_text
+    MovieCategory.NOW_PLAYING_TV -> R.string.tv
+    MovieCategory.UPCOMING_TODAY -> R.string.today
+    MovieCategory.UPCOMING_THIS_WEEK -> R.string.this_week
 }
+
 

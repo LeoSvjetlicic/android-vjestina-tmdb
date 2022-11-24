@@ -49,9 +49,7 @@ fun FavoritesScreen(
     onFavoriteButtonClick: () -> Unit,
     onMovieCardClick: () -> Unit,
 ) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-    ) {
+    Column(modifier = modifier.fillMaxSize()) {
         Text(
             text = stringResource(id = R.string.favorites_text),
             modifier = Modifier.padding(20.dp),
