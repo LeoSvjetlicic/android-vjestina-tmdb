@@ -22,6 +22,7 @@ import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 
 data class ActorCardViewState(
+    val id: Int,
     val imageUrl: String?,
     val name: String,
     val character: String,
@@ -33,11 +34,10 @@ fun ActorCard(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier
-            .padding(10.dp),
+        modifier = modifier.padding(10.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
-        Column {
+        Column(modifier = Modifier) {
             AsyncImage(
                 model = actorCardViewState.imageUrl,
                 contentDescription = null,
@@ -46,16 +46,14 @@ fun ActorCard(
             )
             Text(
                 text = actorCardViewState.name,
-                modifier = Modifier
-                    .padding(start = 10.dp, end = 30.dp, top = 5.dp),
+                modifier = Modifier.padding(start = 10.dp, end = 30.dp, top = 5.dp),
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
             Text(
                 text = actorCardViewState.character,
-                modifier = Modifier
-                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
+                modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
                 fontSize = 8.sp,
                 color = Color.DarkGray
             )
@@ -71,8 +69,13 @@ private fun ActorCardPreview() {
         .width(140.dp)
         .height(200.dp)
     ActorCard(
-        actorCardViewState = ActorCardViewState(actor.imageUrl, actor.name, actor.character),
-        modifier
+        actorCardViewState = ActorCardViewState(
+            actor.id,
+            actor.imageUrl,
+            actor.name,
+            actor.character
+        ),
+        modifier = modifier
     )
 }
 

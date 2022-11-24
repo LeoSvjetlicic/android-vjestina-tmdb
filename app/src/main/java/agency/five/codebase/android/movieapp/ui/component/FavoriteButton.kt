@@ -33,7 +33,6 @@ fun FavoriteButton(
         ),
         contentDescription = null,
         modifier = modifier
-            .size(40.dp)
             .background(Color.Gray.copy(0.7f), CircleShape)
             .padding(5.dp)
             .clickable { onFavoriteButtonClick() },
@@ -48,7 +47,7 @@ private fun FavoriteButtonPreview() {
         mutableStateOf(false)
     }
     FavoriteButton(
-        modifier = Modifier,
+        modifier = Modifier.size(20.dp),
         onFavoriteButtonClick = { isFavorite.value = isFavorite.value.not() },
         isFavorite = isFavorite.value,
     )

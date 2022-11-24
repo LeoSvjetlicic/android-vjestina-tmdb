@@ -19,9 +19,7 @@ fun UserScoreProgressBar(
     score: Float
 ) {
     Box(
-        modifier = modifier
-            .width(50.dp)
-            .height(50.dp),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.fillMaxSize(0.93f)) {
