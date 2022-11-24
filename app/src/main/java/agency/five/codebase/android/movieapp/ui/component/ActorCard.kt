@@ -34,11 +34,10 @@ fun ActorCard(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier
-            .padding(10.dp),
+        modifier = modifier.padding(10.dp),
         shape = RoundedCornerShape(10.dp)
     ) {
-        Column(modifier = modifier) {
+        Column(modifier = Modifier) {
             AsyncImage(
                 model = actorCardViewState.imageUrl,
                 contentDescription = null,
@@ -47,16 +46,14 @@ fun ActorCard(
             )
             Text(
                 text = actorCardViewState.name,
-                modifier = Modifier
-                    .padding(start = 10.dp, end = 30.dp, top = 5.dp),
+                modifier = Modifier.padding(start = 10.dp, end = 30.dp, top = 5.dp),
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
             Text(
                 text = actorCardViewState.character,
-                modifier = Modifier
-                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
+                modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
                 fontSize = 8.sp,
                 color = Color.DarkGray
             )
@@ -78,7 +75,7 @@ private fun ActorCardPreview() {
             actor.name,
             actor.character
         ),
-        modifier
+        modifier = modifier
     )
 }
 
