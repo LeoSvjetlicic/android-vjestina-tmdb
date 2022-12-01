@@ -31,6 +31,11 @@ import coil.compose.AsyncImage
 import agency.five.codebase.android.movieapp.navigation.MOVIE_ID_KEY
 import agency.five.codebase.android.movieapp.navigation.MovieDetailsDestination
 import agency.five.codebase.android.movieapp.navigation.NavigationItem
+import agency.five.codebase.android.movieapp.ui.favorites.FavoritesViewModel
+import agency.five.codebase.android.movieapp.ui.home.HomeViewModel
+import agency.five.codebase.android.movieapp.ui.moviedetails.MovieDetailsViewModel
+import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 
 @SuppressLint("RememberReturnType")
 @Composable
@@ -39,6 +44,10 @@ fun MainScreen() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     var showBottomBar by remember { mutableStateOf(true) }
     var showBackIcon = !showBottomBar
+
+    val homeViewModel = getViewModel<HomeViewModel>()
+    val favoritesViewModel = getViewModel<FavoritesViewModel>()
+
     Scaffold(
         topBar = {
             TopBar(
@@ -47,7 +56,8 @@ fun MainScreen() {
                         BackIcon(onBackClick = {
                             navController.popBackStack()
                             showBottomBar = !showBottomBar
-                        })
+                        }
+                        )
                     }
                 }
             )
@@ -81,31 +91,34 @@ fun MainScreen() {
             ) {
                 composable(NavigationItem.HomeDestination.route) {
                     HomeRoute(
-                        onMovieCardClick = {
+                        onNavigateToMovieDetails = {
                             navController.navigate(
                                 MovieDetailsDestination.createNavigationRoute(1)
                             )
                             showBottomBar = !showBottomBar
                         },
-                        onFavoriteButtonClick = {}
+                        homeViewModel = homeViewModel
                     )
                 }
                 composable(NavigationItem.FavoritesDestination.route) {
                     FavoritesRoute(
-                        onMovieCardClick = {
+                        onNavigateToMovieDetails = {
                             navController.navigate(
                                 MovieDetailsDestination.createNavigationRoute(1)
                             )
                             showBottomBar = !showBottomBar
                         },
-                        onFavoriteButtonClick = {},
+                        favoritesViewModel = favoritesViewModel
                     )
                 }
                 composable(
                     route = MovieDetailsDestination.route,
                     arguments = listOf(navArgument(MOVIE_ID_KEY) { type = NavType.IntType }),
                 ) {
-                    MovieDetailsRoute()
+                    val movieId = it.arguments?.getInt(MOVIE_ID_KEY)
+                    val viewModel =
+                        getViewModel<MovieDetailsViewModel>(parameters = { parametersOf(movieId) })
+                    MovieDetailsRoute(viewModel = viewModel)
                 }
             }
         }
@@ -113,7 +126,7 @@ fun MainScreen() {
 }
 
 @Composable
-private fun TopBar(navigationIcon: @Composable (() -> Unit)? = null, ) {
+private fun TopBar(navigationIcon: @Composable (() -> Unit)? = null) {
     AsyncImage(
         model = R.drawable.tmdb_logo,
         contentDescription = null,

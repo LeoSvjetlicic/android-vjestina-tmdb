@@ -86,4 +86,33 @@ object MoviesMock {
         character = "Tony Stark/Iron Man",
         imageUrl = "https://www.themoviedb.org/t/p/w200/5qHNjhtjMD4YWH3UP0rm4tKwxCL.jpg"
     )
+
+    fun getMovieDetails(movieId: Int): MovieDetails = MovieDetails(
+        movie = Movie(
+            id = 5, //left hardcoded until real database is added
+            title = "Spider-Man: No Way Home",
+            overview = "Peter Parker is unmasked and no longer able to separate his normal life from the high-stakes of being a super-hero. When he asks for help from Doctor Strange the stakes become even more dangerous, forcing him to discover what it truly means to be Spider-Man.",
+            imageUrl = "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
+            isFavorite = false,
+        ),
+        voteAverage = 0.81f,
+        releaseDate = "17/12/2021",
+        language = "US",
+        runtime = 148,
+        crew = List(6) {
+            Crewman(
+                id = it,
+                name = "Jon Watts",
+                job = "Director",
+            )
+        },
+        cast = List(6) {
+            Actor(
+                id = it,
+                name = "Tom Holland",
+                character = "Peter Parker / Spider-Man",
+                imageUrl = "https://image.tmdb.org/t/p/w200/bBRlrpJm9XkNSg0YT5LCaxqoFMX.jpg"
+            )
+        },
+    )
 }
