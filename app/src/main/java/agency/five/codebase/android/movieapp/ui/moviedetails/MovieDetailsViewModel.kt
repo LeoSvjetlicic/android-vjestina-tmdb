@@ -3,6 +3,10 @@ package agency.five.codebase.android.movieapp.ui.moviedetails
 import agency.five.codebase.android.movieapp.data.repository.MovieRepository
 import agency.five.codebase.android.movieapp.mock.MoviesMock
 import agency.five.codebase.android.movieapp.ui.moviedetails.mapper.MovieDetailsMapper
+import android.icu.text.UnicodeSet.EMPTY
+import android.net.Uri.EMPTY
+import android.os.Bundle.EMPTY
+import android.os.PersistableBundle.EMPTY
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*

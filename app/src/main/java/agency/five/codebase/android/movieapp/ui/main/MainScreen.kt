@@ -125,7 +125,7 @@ fun MainScreen() {
                     val movieId = it.arguments?.getInt(MOVIE_ID_KEY)
                     val viewModel =
                         getViewModel<MovieDetailsViewModel>(parameters = { parametersOf(movieId) })
-                    MovieDetailsRoute(viewModel = viewModel)
+                    MovieDetailsRoute(viewModel)
                 }
             }
         }

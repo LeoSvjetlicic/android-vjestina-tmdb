@@ -16,7 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import agency.five.codebase.android.movieapp.R
 import agency.five.codebase.android.movieapp.ui.component.*
+import agency.five.codebase.android.movieapp.ui.favorites.FavoritesMovieViewState
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.dimensionResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 val homeScreenMapper: HomeScreenMapper = HomeScreenMapperImpl()
