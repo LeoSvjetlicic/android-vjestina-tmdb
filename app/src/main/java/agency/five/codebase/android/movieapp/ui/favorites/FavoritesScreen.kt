@@ -2,9 +2,7 @@ package agency.five.codebase.android.movieapp.ui.favorites
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import agency.five.codebase.android.movieapp.R
 import agency.five.codebase.android.movieapp.ui.component.MovieCard
-import agency.five.codebase.android.movieapp.ui.component.MovieCardViewState
 import agency.five.codebase.android.movieapp.ui.theme.LocalSpacing
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -13,7 +11,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,30 +26,33 @@ fun FavoritesRoute(
         favoritesViewState,
         onNavigateToMovieDetails,
         { movie ->
-            favoritesViewModel.toggleFavorite(movie.id)
+            favoritesViewModel.toggleFavorite(movie)
         },
     )
 }
 
 @Composable
 private fun MoviesList(
-    movieItems: List<MovieCardViewState>,
+    movieItems: FavoritesViewState,
     onNavigateToMovieDetails: (Int) -> Unit,
-    onFavoriteButtonClick: (MovieCardViewState) -> Unit,
+    onFavoriteButtonClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
         modifier = modifier.fillMaxWidth(),
         columns = GridCells.Fixed(3),
-        contentPadding = PaddingValues(vertical = LocalSpacing.current.medium),
-        verticalArrangement = Arrangement.spacedBy(LocalSpacing.current.medium),
+        contentPadding = PaddingValues(vertical = LocalSpacing.current.extraSmall),
+        verticalArrangement = Arrangement.spacedBy(LocalSpacing.current.extraSmall),
         horizontalArrangement = Arrangement.spacedBy(LocalSpacing.current.extraSmall)
     ) {
-        items(movieItems.count()) {
+        items(movieItems.movieCardViewStates) {
             MovieCard(
-                movie = movieItems[it],
-                onFavoriteButtonClick= { onFavoriteButtonClick(movieItems[it]) },
-                onMovieCardClick = { onNavigateToMovieDetails(movieItems[it].id) }
+                movie = it.movieViewState,
+                onFavoriteButtonClick = { onFavoriteButtonClick(it.id) },
+                onMovieCardClick = { onNavigateToMovieDetails(it.id) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
             )
         }
     }
@@ -62,7 +62,7 @@ private fun MoviesList(
 fun FavoritesScreen(
     favoritesViewState: FavoritesViewState,
     onNavigateToMovieDetails: (Int) -> Unit,
-    onFavoriteButtonClick: (MovieCardViewState) -> Unit,
+    onFavoriteButtonClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -72,22 +72,10 @@ fun FavoritesScreen(
     ) {
         Text(text = "Favorites", fontSize = 20.sp, fontWeight = FontWeight.Bold)
         MoviesList(
-            movieItems = favoritesViewState.movieCardViewStates,
+            movieItems = favoritesViewState,
             onNavigateToMovieDetails,
             onFavoriteButtonClick
         )
     }
 }
 
-/*@Preview
-@Composable
-fun FavoritesScreenPreview() {
-    MovieAppTheme {
-        FavoritesScreen(
-            favoritesViewState = favoritesViewState,
-            modifier = Modifier,
-            onFavoriteButtonClick = {},
-            onMovieCardClick = {},
-        )
-    }
-}*/

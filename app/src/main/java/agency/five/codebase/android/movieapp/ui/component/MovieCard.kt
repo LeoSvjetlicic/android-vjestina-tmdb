@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
 data class MovieCardViewState(
-    val id: Int,
     val imageUrl: String?,
     val isFavorite: Boolean
 )
@@ -57,7 +56,6 @@ fun MovieCardPreview() {
     val movieCardViewState = MovieCardViewState(
         imageUrl = movie.imageUrl,
         isFavorite = movie.isFavorite,
-        id = movie.id
     )
     MovieCard(movie = movieCardViewState, onMovieCardClick = {}, onFavoriteButtonClick = {})
 }

@@ -2,7 +2,6 @@ package agency.five.codebase.android.movieapp.ui.main
 
 import agency.five.codebase.android.movieapp.ui.favorites.FavoritesRoute
 import agency.five.codebase.android.movieapp.ui.home.HomeRoute
-import agency.five.codebase.android.movieapp.ui.moviedetails.MovieDetailsRoute
 import agency.five.codebase.android.movieapp.R
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -33,6 +32,7 @@ import agency.five.codebase.android.movieapp.navigation.MovieDetailsDestination
 import agency.five.codebase.android.movieapp.navigation.NavigationItem
 import agency.five.codebase.android.movieapp.ui.favorites.FavoritesViewModel
 import agency.five.codebase.android.movieapp.ui.home.HomeViewModel
+import agency.five.codebase.android.movieapp.ui.moviedetails.MovieDetailsRoute
 import agency.five.codebase.android.movieapp.ui.moviedetails.MovieDetailsViewModel
 import org.koin.androidx.compose.getViewModel
 import org.koin.core.parameter.parametersOf
@@ -42,8 +42,20 @@ import org.koin.core.parameter.parametersOf
 fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    var showBottomBar by remember { mutableStateOf(true) }
-    var showBackIcon = !showBottomBar
+    val showBottomBar by remember {
+        derivedStateOf {
+            when (navBackStackEntry?.destination?.route) {
+                MovieDetailsDestination.route -> false
+                else -> true
+            }
+        }
+    }
+    var showBackIcon =
+        if (navBackStackEntry?.destination?.route == NavigationItem.FavoritesDestination.route) {
+            true
+        } else {
+            !showBottomBar
+        }
 
     val homeViewModel = getViewModel<HomeViewModel>()
     val favoritesViewModel = getViewModel<FavoritesViewModel>()
@@ -53,10 +65,7 @@ fun MainScreen() {
             TopBar(
                 navigationIcon = {
                     if (showBackIcon) {
-                        BackIcon(onBackClick = {
-                            navController.popBackStack()
-                            showBottomBar = !showBottomBar
-                        }
+                        BackIcon(onBackClick = { navController.popBackStack() }
                         )
                     }
                 }
@@ -93,9 +102,8 @@ fun MainScreen() {
                     HomeRoute(
                         onNavigateToMovieDetails = {
                             navController.navigate(
-                                MovieDetailsDestination.createNavigationRoute(1)
+                                MovieDetailsDestination.createNavigationRoute(it)
                             )
-                            showBottomBar = !showBottomBar
                         },
                         homeViewModel = homeViewModel
                     )
@@ -104,9 +112,8 @@ fun MainScreen() {
                     FavoritesRoute(
                         onNavigateToMovieDetails = {
                             navController.navigate(
-                                MovieDetailsDestination.createNavigationRoute(1)
+                                MovieDetailsDestination.createNavigationRoute(it)
                             )
-                            showBottomBar = !showBottomBar
                         },
                         favoritesViewModel = favoritesViewModel
                     )
@@ -118,7 +125,7 @@ fun MainScreen() {
                     val movieId = it.arguments?.getInt(MOVIE_ID_KEY)
                     val viewModel =
                         getViewModel<MovieDetailsViewModel>(parameters = { parametersOf(movieId) })
-                    MovieDetailsRoute(viewModel = viewModel)
+                    MovieDetailsRoute(viewModel)
                 }
             }
         }

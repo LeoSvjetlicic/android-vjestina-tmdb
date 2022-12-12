@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import org.koin.dsl.module
 
 val dataModule = module {
-    single<MovieRepository>{
+    single<MovieRepository> {
         FakeMovieRepository(ioDispatcher = Dispatchers.IO)
     }
 }

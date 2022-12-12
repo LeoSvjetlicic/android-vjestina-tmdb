@@ -28,10 +28,9 @@ class HomeViewModel(
     private val _upcomingCategoryViewState = MutableStateFlow(HomeMovieCategoryViewState())
     val upcomingCategoryViewState: StateFlow<HomeMovieCategoryViewState> =
         _upcomingCategoryViewState.asStateFlow()
-    private val _mapper = homeScreenMapper
 
     init {
-        createViewState(_mapper)
+        createViewState(homeScreenMapper)
     }
 
     private fun createViewState(homeScreenMapper: HomeScreenMapper) {
@@ -102,7 +101,7 @@ class HomeViewModel(
                     }
                 }
                 _popularSelectedCategory.value = tempCategory
-                createViewState(_mapper)
+                createViewState(homeScreenMapper)
             }
             MovieCategory.NOW_PLAYING_MOVIES,
             MovieCategory.NOW_PLAYING_TV -> {
@@ -112,7 +111,7 @@ class HomeViewModel(
                     }
                 }
                 _nowPlayingSelectedCategory.value = tempCategory
-                createViewState(_mapper)
+                createViewState(homeScreenMapper)
             }
             MovieCategory.UPCOMING_TODAY,
             MovieCategory.UPCOMING_THIS_WEEK
@@ -123,7 +122,7 @@ class HomeViewModel(
                     }
                 }
                 _upcomingSelectedCategory.value = tempCategory
-                createViewState(_mapper)
+                createViewState(homeScreenMapper)
             }
         }
     }

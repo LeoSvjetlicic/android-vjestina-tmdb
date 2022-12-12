@@ -10,7 +10,7 @@ object FavoritesDBMock {
     private val _favoriteIds = MutableStateFlow(setOf<Int>())
     val favoriteIds: StateFlow<Set<Int>> = _favoriteIds.asStateFlow()
 
-    fun insert(movieId: Int){  _favoriteIds.value += movieId}
-    fun delete(movieId: Int){  _favoriteIds.value -= movieId}
+    fun insert(movieId: Int){  _favoriteIds.update { it + movieId }}
+    fun delete(movieId: Int){  _favoriteIds.update { it - movieId }}
 
 }

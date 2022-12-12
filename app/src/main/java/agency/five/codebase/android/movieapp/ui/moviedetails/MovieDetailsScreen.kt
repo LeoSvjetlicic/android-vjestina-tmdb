@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+
 @Composable
 fun MovieDetailsRoute(
     viewModel: MovieDetailsViewModel
@@ -30,17 +31,15 @@ fun MovieDetailsRoute(
     val movieDetailsViewState: MovieDetailsViewState by viewModel.movieDetailsViewState.collectAsState()
     MovieDetailsScreen(
         movieDetailsViewState = movieDetailsViewState,
-        onFavoriteButtonClick = {
-            viewModel.toggleFavorite(movieDetailsViewState.id)
-        }
+        onFavoriteButtonClick = viewModel::toggleFavorite
     )
 }
 
 @Composable
 fun MovieDetailsScreen(
-    modifier: Modifier = Modifier,
     movieDetailsViewState: MovieDetailsViewState,
-    onFavoriteButtonClick: () -> Unit
+    onFavoriteButtonClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column() {
         LazyColumn(modifier = modifier.fillMaxSize()) {
@@ -75,7 +74,7 @@ fun MovieDetailsScreen(
                             .size(50.dp)
                             .align(Alignment.BottomStart),
                         isFavorite = movieDetailsViewState.isFavorite,
-                        onFavoriteButtonClick = { onFavoriteButtonClick() }
+                        onFavoriteButtonClick = { onFavoriteButtonClick(movieDetailsViewState.id) }
                     )
                 }
             }
@@ -135,13 +134,3 @@ fun MovieDetailsScreen(
     }
 }
 
-/*@Preview
-@Composable
-fun MovieDetailsScreenPreview() {
-    MovieAppTheme {
-        MovieDetailsScreen(
-            movieDetailsViewState = movieDetailsViewState,
-            modifier = Modifier,
-        )
-    }
-}*/
