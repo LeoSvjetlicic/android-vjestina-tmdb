@@ -12,6 +12,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 @Composable
 fun UserScoreProgressBar(
@@ -40,7 +42,11 @@ fun UserScoreProgressBar(
                 )
             )
         }
-        Text(text = score.toString(), color = Color.Black, fontSize = 15.sp)
+        Text(
+            text = ((score * 100.0).roundToInt() / 100.0).toString(),
+            color = Color.Black,
+            fontSize = 15.sp
+        )
     }
 }
 

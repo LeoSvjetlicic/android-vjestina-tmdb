@@ -6,11 +6,10 @@ import agency.five.codebase.android.movieapp.ui.favorites.FavoritesViewState
 
 data class HomeMovieViewState(
     val id: Int,
-    val imageUrl: String?,
-    val isFavorite: Boolean,
+    val movieViewState: MovieCardViewState
 )
 
 data class HomeMovieCategoryViewState(
     val movieCategories: List<MovieCategoryLabelViewState> = listOf(),
-    val movies: FavoritesViewState = FavoritesViewState()
+    val movies: List<HomeMovieViewState>
 )

@@ -26,16 +26,11 @@ class HomeScreenMapperImpl : HomeScreenMapper {
                 isSelected = category == selectedMovieCategory
             )
         },
-        movies = FavoritesViewState(movies.map { movie ->
-            FavoritesMovieViewState(
-                id = movie.id,
-                movieViewState = MovieCardViewState(
-                    imageUrl = movie.imageUrl,
-                    isFavorite = movie.isFavorite
-                )
+        movies = movies.map { movie ->
+            HomeMovieViewState(
+                movie.id, MovieCardViewState(movie.imageUrl, movie.isFavorite)
             )
         }
-        )
     )
 }
 

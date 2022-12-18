@@ -12,7 +12,6 @@ class FavoritesViewModel(
     private val movieRepository: MovieRepository,
     private val favoritesMapper: FavoritesMapper,
 ) : ViewModel() {
-
     private val _favoritesViewState = MutableStateFlow(FavoritesViewState())
     val favoritesViewState = _favoritesViewState.asStateFlow()
 
@@ -26,7 +25,7 @@ class FavoritesViewModel(
 
     fun toggleFavorite(movieId: Int) {
         viewModelScope.launch {
-            movieRepository.toggleFavorite(movieId)
+            movieRepository.removeMovieFromFavorites(movieId)
         }
     }
 }

@@ -5,80 +5,67 @@ import agency.five.codebase.android.movieapp.model.MovieCategory
 import agency.five.codebase.android.movieapp.ui.home.mapper.HomeScreenMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
+private const val STOP_TIMEOUT_MILIS = 5000L
+
+class HomeScreenViewModel(
     private val movieRepository: MovieRepository,
-    homeScreenMapper: HomeScreenMapper,
+    private val homeMapper: HomeScreenMapper
 ) : ViewModel() {
-    private val _popularSelectedCategory = MutableStateFlow(MovieCategory.POPULAR_STREAMING)
-    private val _nowPlayingSelectedCategory = MutableStateFlow(MovieCategory.NOW_PLAYING_MOVIES)
-    private val _upcomingSelectedCategory = MutableStateFlow(MovieCategory.UPCOMING_TODAY)
 
-    private val _popularCategoryViewState = MutableStateFlow(HomeMovieCategoryViewState())
-    val popularCategoryViewState: StateFlow<HomeMovieCategoryViewState> =
-        _popularCategoryViewState.asStateFlow()
-    private val _nowPlayingCategoryViewState = MutableStateFlow(HomeMovieCategoryViewState())
-    val nowPlayingCategoryViewState: StateFlow<HomeMovieCategoryViewState> =
-        _nowPlayingCategoryViewState.asStateFlow()
-    private val _upcomingCategoryViewState = MutableStateFlow(HomeMovieCategoryViewState())
-    val upcomingCategoryViewState: StateFlow<HomeMovieCategoryViewState> =
-        _upcomingCategoryViewState.asStateFlow()
+    private val popular = listOf(
+        MovieCategory.POPULAR_STREAMING,
+        MovieCategory.POPULAR_ON_TV,
+        MovieCategory.POPULAR_FOR_RENT,
+        MovieCategory.POPULAR_IN_THEATRES
+    )
+    private val nowPlaying = listOf(
+        MovieCategory.NOW_PLAYING_MOVIES,
+        MovieCategory.NOW_PLAYING_TV
+    )
+    private val upcoming = listOf(
+        MovieCategory.UPCOMING_TODAY,
+        MovieCategory.UPCOMING_THIS_WEEK
+    )
 
-    init {
-        createViewState(homeScreenMapper)
-    }
+    private val popularSelected = MutableStateFlow(MovieCategory.POPULAR_STREAMING)
+    private val nowPlayingSelected = MutableStateFlow(MovieCategory.NOW_PLAYING_MOVIES)
+    private val upcomingSelected = MutableStateFlow(MovieCategory.UPCOMING_TODAY)
 
-    private fun createViewState(homeScreenMapper: HomeScreenMapper) {
-        viewModelScope.launch {
-            movieRepository.popularMovies(MovieCategory.POPULAR_STREAMING)
-                .collect { movies ->
-                    _popularCategoryViewState.value =
-                        homeScreenMapper.toHomeMovieCategoryViewState(
-                            listOf(
-                                MovieCategory.POPULAR_STREAMING,
-                                MovieCategory.POPULAR_ON_TV,
-                                MovieCategory.POPULAR_FOR_RENT,
-                                MovieCategory.POPULAR_IN_THEATRES
-                            ),
-                            _popularSelectedCategory.value,
-                            movies
-                        )
-                }
+    private val initialHomeMovieCategoryViewState =
+        HomeMovieCategoryViewState(emptyList(), emptyList())
+
+    val popularCategoryViewState = popularSelected.flatMapLatest { category ->
+        movieRepository.movies(category).map { movies ->
+            homeMapper.toHomeMovieCategoryViewState(popular, category, movies)
         }
-        viewModelScope.launch {
-            movieRepository.nowPlayingMovies(MovieCategory.NOW_PLAYING_MOVIES)
-                .collect { movies ->
-                    _nowPlayingCategoryViewState.value =
-                        homeScreenMapper.toHomeMovieCategoryViewState(
-                            listOf(
-                                MovieCategory.NOW_PLAYING_MOVIES,
-                                MovieCategory.NOW_PLAYING_TV,
-                            ),
-                            _nowPlayingSelectedCategory.value,
-                            movies
-                        )
-                }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILIS),
+        initialValue = initialHomeMovieCategoryViewState
+    )
+
+    val nowPlayingCategoryViewState = nowPlayingSelected.flatMapLatest { category ->
+        movieRepository.movies(category).map { movies ->
+            homeMapper.toHomeMovieCategoryViewState(nowPlaying, category, movies)
         }
-        viewModelScope.launch {
-            movieRepository.upcomingMovies(MovieCategory.UPCOMING_TODAY)
-                .collect { movies ->
-                    _upcomingCategoryViewState.value =
-                        homeScreenMapper.toHomeMovieCategoryViewState(
-                            listOf(
-                                MovieCategory.UPCOMING_TODAY,
-                                MovieCategory.UPCOMING_THIS_WEEK,
-                            ),
-                            _upcomingSelectedCategory.value,
-                            movies
-                        )
-                }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILIS),
+        initialValue = initialHomeMovieCategoryViewState
+    )
+
+    val upcomingCategoryViewState = upcomingSelected.flatMapLatest { category ->
+        movieRepository.movies(category).map { movies ->
+            homeMapper.toHomeMovieCategoryViewState(upcoming, category, movies)
         }
-    }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILIS),
+        initialValue = initialHomeMovieCategoryViewState
+    )
 
     fun toggleFavorite(movieId: Int) {
         viewModelScope.launch {
@@ -86,43 +73,22 @@ class HomeViewModel(
         }
     }
 
-    fun changeCategory(
-        category: Int
-    ) {
-        when (val tempCategory = MovieCategory.values()[category]) {
-            MovieCategory.POPULAR_STREAMING,
-            MovieCategory.POPULAR_FOR_RENT,
-            MovieCategory.POPULAR_ON_TV,
-            MovieCategory.POPULAR_IN_THEATRES
+    fun switchSelectedCategory(categoryId: Int) {
+        when (categoryId) {
+            MovieCategory.POPULAR_STREAMING.ordinal,
+            MovieCategory.POPULAR_ON_TV.ordinal,
+            MovieCategory.POPULAR_FOR_RENT.ordinal,
+            MovieCategory.POPULAR_IN_THEATRES.ordinal
             -> {
-                _popularCategoryViewState.mapLatest { homeMovies ->
-                    homeMovies.movieCategories.map {
-                        it.copy(isSelected = it.itemId == tempCategory.ordinal)
-                    }
-                }
-                _popularSelectedCategory.value = tempCategory
-                createViewState(homeScreenMapper)
+                popularSelected.update { MovieCategory.values()[categoryId] }
             }
-            MovieCategory.NOW_PLAYING_MOVIES,
-            MovieCategory.NOW_PLAYING_TV -> {
-                _nowPlayingCategoryViewState.mapLatest { homeMovies ->
-                    homeMovies.movieCategories.map {
-                        it.copy(isSelected = it.itemId == tempCategory.ordinal)
-                    }
-                }
-                _nowPlayingSelectedCategory.value = tempCategory
-                createViewState(homeScreenMapper)
-            }
-            MovieCategory.UPCOMING_TODAY,
-            MovieCategory.UPCOMING_THIS_WEEK
+            MovieCategory.NOW_PLAYING_MOVIES.ordinal,
+            MovieCategory.NOW_PLAYING_TV.ordinal
             -> {
-                _upcomingCategoryViewState.mapLatest { homeMovies ->
-                    homeMovies.movieCategories.map {
-                        it.copy(isSelected = it.itemId == tempCategory.ordinal)
-                    }
-                }
-                _upcomingSelectedCategory.value = tempCategory
-                createViewState(homeScreenMapper)
+                nowPlayingSelected.update { MovieCategory.values()[categoryId] }
+            }
+            else -> {
+                upcomingSelected.update { MovieCategory.values()[categoryId] }
             }
         }
     }
