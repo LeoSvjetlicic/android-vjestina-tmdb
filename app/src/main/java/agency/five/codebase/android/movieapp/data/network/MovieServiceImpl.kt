@@ -9,7 +9,7 @@ import io.ktor.client.request.*
 
 const val BASE_IMAGE_URL = "https://image.tmdb.org/t/p/w500"
 private const val BASE_URL = "https://api.themoviedb.org/3"
-private const val API_KEY = "fb407104d1e75c75cc7a13bc3d6cffbb"
+private const val API_KEY = "fd907ce3ee946551ba9ad55906e36893"
 
 class MovieServiceImpl(private val client: HttpClient) : MovieService {
     override suspend fun fetchPopularMovies(): MovieResponse =
