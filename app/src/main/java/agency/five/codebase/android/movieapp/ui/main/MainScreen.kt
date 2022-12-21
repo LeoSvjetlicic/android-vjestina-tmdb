@@ -2,7 +2,6 @@ package agency.five.codebase.android.movieapp.ui.main
 
 import agency.five.codebase.android.movieapp.ui.favorites.FavoritesRoute
 import agency.five.codebase.android.movieapp.ui.home.HomeRoute
-import agency.five.codebase.android.movieapp.ui.moviedetails.MovieDetailsRoute
 import agency.five.codebase.android.movieapp.R
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -31,23 +30,43 @@ import coil.compose.AsyncImage
 import agency.five.codebase.android.movieapp.navigation.MOVIE_ID_KEY
 import agency.five.codebase.android.movieapp.navigation.MovieDetailsDestination
 import agency.five.codebase.android.movieapp.navigation.NavigationItem
+import agency.five.codebase.android.movieapp.ui.favorites.FavoritesViewModel
+import agency.five.codebase.android.movieapp.ui.home.HomeViewModel
+import agency.five.codebase.android.movieapp.ui.moviedetails.MovieDetailsRoute
+import agency.five.codebase.android.movieapp.ui.moviedetails.MovieDetailsViewModel
+import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 
 @SuppressLint("RememberReturnType")
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    var showBottomBar by remember { mutableStateOf(true) }
-    var showBackIcon = !showBottomBar
+    val showBottomBar by remember {
+        derivedStateOf {
+            when (navBackStackEntry?.destination?.route) {
+                MovieDetailsDestination.route -> false
+                else -> true
+            }
+        }
+    }
+    var showBackIcon =
+        if (navBackStackEntry?.destination?.route == NavigationItem.FavoritesDestination.route) {
+            true
+        } else {
+            !showBottomBar
+        }
+
+    val homeViewModel = getViewModel<HomeViewModel>()
+    val favoritesViewModel = getViewModel<FavoritesViewModel>()
+
     Scaffold(
         topBar = {
             TopBar(
                 navigationIcon = {
                     if (showBackIcon) {
-                        BackIcon(onBackClick = {
-                            navController.popBackStack()
-                            showBottomBar = !showBottomBar
-                        })
+                        BackIcon(onBackClick = { navController.popBackStack() }
+                        )
                     }
                 }
             )
@@ -81,31 +100,32 @@ fun MainScreen() {
             ) {
                 composable(NavigationItem.HomeDestination.route) {
                     HomeRoute(
-                        onMovieCardClick = {
+                        onNavigateToMovieDetails = {
                             navController.navigate(
-                                MovieDetailsDestination.createNavigationRoute(1)
+                                MovieDetailsDestination.createNavigationRoute(it)
                             )
-                            showBottomBar = !showBottomBar
                         },
-                        onFavoriteButtonClick = {}
+                        homeViewModel = homeViewModel
                     )
                 }
                 composable(NavigationItem.FavoritesDestination.route) {
                     FavoritesRoute(
-                        onMovieCardClick = {
+                        onNavigateToMovieDetails = {
                             navController.navigate(
-                                MovieDetailsDestination.createNavigationRoute(1)
+                                MovieDetailsDestination.createNavigationRoute(it)
                             )
-                            showBottomBar = !showBottomBar
                         },
-                        onFavoriteButtonClick = {},
+                        favoritesViewModel = favoritesViewModel
                     )
                 }
                 composable(
                     route = MovieDetailsDestination.route,
                     arguments = listOf(navArgument(MOVIE_ID_KEY) { type = NavType.IntType }),
                 ) {
-                    MovieDetailsRoute()
+                    val movieId = it.arguments?.getInt(MOVIE_ID_KEY)
+                    val viewModel =
+                        getViewModel<MovieDetailsViewModel>(parameters = { parametersOf(movieId) })
+                    MovieDetailsRoute(viewModel)
                 }
             }
         }
@@ -113,7 +133,7 @@ fun MainScreen() {
 }
 
 @Composable
-private fun TopBar(navigationIcon: @Composable (() -> Unit)? = null, ) {
+private fun TopBar(navigationIcon: @Composable (() -> Unit)? = null) {
     AsyncImage(
         model = R.drawable.tmdb_logo,
         contentDescription = null,

@@ -17,7 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import agency.five.codebase.android.movieapp.R
 import agency.five.codebase.android.movieapp.ui.component.*
+import agency.five.codebase.android.movieapp.ui.favorites.FavoritesMovieViewState
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.dimensionResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 val homeScreenMapper: HomeScreenMapper = HomeScreenMapperImpl()
 val movies = MoviesMock.getMoviesList()
@@ -50,20 +53,21 @@ var upcomingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
 
 @Composable
 fun HomeRoute(
-    onMovieCardClick: () -> Unit,
-    onFavoriteButtonClick: () -> Unit,
-    modifier: Modifier = Modifier
+    homeViewModel: HomeViewModel = viewModel(),
+    onNavigateToMovieDetails: (Int) -> Unit
 ) {
-    val popularCategoryViewState by remember { mutableStateOf(popularCategoryViewState) }
-    val nowPlayingCategoryViewState by remember { mutableStateOf(nowPlayingCategoryViewState) }
-    val upcomingCategoryViewState by remember { mutableStateOf(upcomingCategoryViewState) }
+    val popularCategoryViewState: HomeMovieCategoryViewState by homeViewModel.popularCategoryViewState.collectAsState()
+    val nowPlayingCategoryViewState: HomeMovieCategoryViewState by homeViewModel.nowPlayingCategoryViewState.collectAsState()
+    val upcomingCategoryViewState: HomeMovieCategoryViewState by homeViewModel.upcomingCategoryViewState.collectAsState()
     HomeScreen(
-        popular = popularCategoryViewState,
-        nowPlaying = nowPlayingCategoryViewState,
-        upcoming = upcomingCategoryViewState,
-        onMovieCardClick = { onMovieCardClick() },
-        onFavoriteButtonClick = { onFavoriteButtonClick() },
-        modifier = modifier
+        popularCategoryViewState, nowPlayingCategoryViewState, upcomingCategoryViewState,
+        onCategoryClick = { category ->
+            homeViewModel.changeCategory(category.itemId)
+        },
+        onFavoriteButtonClick = { movie ->
+            homeViewModel.toggleFavorite(movie)
+        },
+        onMovieCardClick = onNavigateToMovieDetails
     )
 }
 
@@ -72,8 +76,9 @@ fun HomeScreen(
     popular: HomeMovieCategoryViewState,
     nowPlaying: HomeMovieCategoryViewState,
     upcoming: HomeMovieCategoryViewState,
-    onMovieCardClick: () -> Unit,
-    onFavoriteButtonClick: () -> Unit,
+    onMovieCardClick: (Int) -> Unit,
+    onFavoriteButtonClick: (Int) -> Unit,
+    onCategoryClick: (MovieCategoryLabelViewState) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
@@ -82,20 +87,26 @@ fun HomeScreen(
                 viewState = popular,
                 title = stringResource(id = R.string.whats_popular),
                 modifier = Modifier,
-                onMovieCardClick = { onMovieCardClick() },
-                onFavoriteButtonClick = { onFavoriteButtonClick() })
+                onMovieCardClick = onMovieCardClick,
+                onFavoriteButtonClick = onFavoriteButtonClick,
+                onCategoryClick = onCategoryClick
+            )
             HomeScreenPart(
                 viewState = nowPlaying,
                 title = stringResource(id = R.string.now_playing),
                 modifier = Modifier,
-                onMovieCardClick = { onMovieCardClick() },
-                onFavoriteButtonClick = { onFavoriteButtonClick() })
+                onMovieCardClick = onMovieCardClick,
+                onFavoriteButtonClick = onFavoriteButtonClick,
+                onCategoryClick = onCategoryClick
+            )
             HomeScreenPart(
                 viewState = upcoming,
                 title = stringResource(id = R.string.upcoming),
                 modifier = Modifier,
-                onMovieCardClick = { onMovieCardClick() },
-                onFavoriteButtonClick = { onFavoriteButtonClick() })
+                onMovieCardClick = onMovieCardClick,
+                onFavoriteButtonClick = onFavoriteButtonClick,
+                onCategoryClick = onCategoryClick
+            )
         }
     }
 }
@@ -105,8 +116,9 @@ fun HomeScreenPart(
     viewState: HomeMovieCategoryViewState,
     title: String,
     modifier: Modifier,
-    onMovieCardClick: () -> Unit,
-    onFavoriteButtonClick: () -> Unit,
+    onMovieCardClick: (Int) -> Unit,
+    onCategoryClick: (MovieCategoryLabelViewState) -> Unit,
+    onFavoriteButtonClick: (Int) -> Unit,
 ) {
     Column(modifier = modifier.padding(10.dp)) {
         Text(
@@ -123,7 +135,7 @@ fun HomeScreenPart(
             items(
                 items = viewState.movieCategories,
                 key = { category -> category.itemId }
-            ) { it ->
+            ) {
                 MovieCategoryLabel(
                     modifier = Modifier.padding(end = 10.dp),
                     labelViewState = it,
@@ -132,99 +144,18 @@ fun HomeScreenPart(
             }
         }
         LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(
-                items = viewState.movies,
-                key = { movie -> movie.id }
-            ) { item ->
+            items(items = viewState.movies.movieCardViewStates, key = { movie ->
+                movie.id
+            }) { movie ->
                 MovieCard(
-                    modifier = Modifier
-                        .width(120.dp)
-                        .height(180.dp),
                     movie = MovieCardViewState(
-                        item.imageUrl,
-                        item.isFavorite
+                        movie.movieViewState.imageUrl, movie.movieViewState.isFavorite
                     ),
-                    onFavoriteButtonClick = { onFavoriteButtonClick() },
-                    onMovieCardClick = { onMovieCardClick() }
+                    onFavoriteButtonClick = { onFavoriteButtonClick(movie.id) },
+                    onMovieCardClick = { onMovieCardClick(movie.id) },
                 )
             }
         }
     }
 }
 
-fun onCategoryClick(it: MovieCategoryLabelViewState) {
-    when (it.itemId) {
-        0 -> {
-            popularCategoryViewState =
-                homeScreenMapper.toHomeMovieCategoryViewState(
-                    movies = movies,
-                    movieCategories = popular,
-                    selectedMovieCategory = MovieCategory.POPULAR_STREAMING
-                )
-        }
-        1 -> {
-            popularCategoryViewState =
-                homeScreenMapper.toHomeMovieCategoryViewState(
-                    movies = movies,
-                    movieCategories = popular,
-                    selectedMovieCategory = MovieCategory.POPULAR_ON_TV
-                )
-        }
-        2 -> {
-            popularCategoryViewState =
-                homeScreenMapper.toHomeMovieCategoryViewState(
-                    movies = movies,
-                    movieCategories = popular,
-                    selectedMovieCategory = MovieCategory.POPULAR_FOR_RENT
-                )
-        }
-        3 -> {
-            popularCategoryViewState =
-                homeScreenMapper.toHomeMovieCategoryViewState(
-                    movies = movies,
-                    movieCategories = popular,
-                    selectedMovieCategory = MovieCategory.POPULAR_IN_THEATRES
-                )
-        }
-        4 -> {
-            nowPlayingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
-                movies = movies,
-                movieCategories = nowPlaying,
-                selectedMovieCategory = MovieCategory.NOW_PLAYING_MOVIES
-            )
-        }
-        5 -> {
-            nowPlayingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
-                movies = movies,
-                movieCategories = nowPlaying,
-                selectedMovieCategory = MovieCategory.NOW_PLAYING_TV
-            )
-        }
-        6 -> {
-            upcomingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
-                movies = movies,
-                movieCategories = upcoming,
-                selectedMovieCategory = MovieCategory.UPCOMING_TODAY
-            )
-        }
-        else -> {
-            upcomingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
-                movies = movies,
-                movieCategories = upcoming,
-                selectedMovieCategory = MovieCategory.UPCOMING_THIS_WEEK
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun HomeScreenPreview() {
-    HomeScreen(
-        popular = popularCategoryViewState,
-        nowPlaying = nowPlayingCategoryViewState,
-        upcoming = upcomingCategoryViewState,
-        onMovieCardClick = { },
-        onFavoriteButtonClick = { }
-    )
-}

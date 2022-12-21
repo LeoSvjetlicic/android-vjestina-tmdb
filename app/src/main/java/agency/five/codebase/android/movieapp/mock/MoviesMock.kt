@@ -86,4 +86,20 @@ object MoviesMock {
         character = "Tony Stark/Iron Man",
         imageUrl = "https://www.themoviedb.org/t/p/w200/5qHNjhtjMD4YWH3UP0rm4tKwxCL.jpg"
     )
+
+    fun getMovieDetails(movieId: Int): MovieDetails {
+        val fakeMovies = MoviesMock.getMoviesList().toMutableList()
+        val movie = fakeMovies.first { it.id == movieId }
+        val details = MoviesMock.getMovieDetails()
+
+        return MovieDetails(
+            movie = movie,
+            voteAverage = details.voteAverage,
+            releaseDate = details.releaseDate,
+            language = details.language,
+            runtime = details.runtime,
+            crew = details.crew,
+            cast = details.cast
+        )
+    }
 }

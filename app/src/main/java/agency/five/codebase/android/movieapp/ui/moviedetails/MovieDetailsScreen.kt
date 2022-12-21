@@ -1,11 +1,7 @@
 package agency.five.codebase.android.movieapp.ui.moviedetails
 
 import agency.five.codebase.android.movieapp.R
-import agency.five.codebase.android.movieapp.mock.MoviesMock
 import agency.five.codebase.android.movieapp.ui.component.*
-import agency.five.codebase.android.movieapp.ui.moviedetails.mapper.MovieDetailsMapper
-import agency.five.codebase.android.movieapp.ui.moviedetails.mapper.MovieDetailsMapperImpl
-import agency.five.codebase.android.movieapp.ui.theme.MovieAppTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,25 +20,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 
-private val detailsMapper: MovieDetailsMapper = MovieDetailsMapperImpl()
-
-val movieDetailsViewState = detailsMapper.toMovieDetailsViewState(MoviesMock.getMovieDetails())
-
 @Composable
-fun MovieDetailsRoute() {
-    val movieDetailsViewState by remember { mutableStateOf(movieDetailsViewState) }
-    MovieDetailsScreen(movieDetailsViewState = movieDetailsViewState)
+fun MovieDetailsRoute(
+    viewModel: MovieDetailsViewModel
+) {
+    val movieDetailsViewState: MovieDetailsViewState by viewModel.movieDetailsViewState.collectAsState()
+    MovieDetailsScreen(
+        movieDetailsViewState = movieDetailsViewState,
+        onFavoriteButtonClick = viewModel::toggleFavorite
+    )
 }
 
 @Composable
 fun MovieDetailsScreen(
-    modifier: Modifier = Modifier,
     movieDetailsViewState: MovieDetailsViewState,
+    onFavoriteButtonClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column() {
         LazyColumn(modifier = modifier.fillMaxSize()) {
@@ -77,7 +74,7 @@ fun MovieDetailsScreen(
                             .size(50.dp)
                             .align(Alignment.BottomStart),
                         isFavorite = movieDetailsViewState.isFavorite,
-                        onFavoriteButtonClick = {}
+                        onFavoriteButtonClick = { onFavoriteButtonClick(movieDetailsViewState.id) }
                     )
                 }
             }
@@ -137,13 +134,3 @@ fun MovieDetailsScreen(
     }
 }
 
-@Preview
-@Composable
-fun MovieDetailsScreenPreview() {
-    MovieAppTheme {
-        MovieDetailsScreen(
-            movieDetailsViewState = movieDetailsViewState,
-            modifier = Modifier,
-        )
-    }
-}

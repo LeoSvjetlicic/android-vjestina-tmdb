@@ -55,7 +55,7 @@ fun MovieCardPreview() {
     val movie = MoviesMock.getMovieDetails().movie
     val movieCardViewState = MovieCardViewState(
         imageUrl = movie.imageUrl,
-        isFavorite = movie.isFavorite
+        isFavorite = movie.isFavorite,
     )
     MovieCard(movie = movieCardViewState, onMovieCardClick = {}, onFavoriteButtonClick = {})
 }
