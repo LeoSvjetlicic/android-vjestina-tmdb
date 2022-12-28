@@ -6,12 +6,10 @@ import agency.five.codebase.android.movieapp.data.network.MovieService
 import agency.five.codebase.android.movieapp.model.Movie
 import agency.five.codebase.android.movieapp.model.MovieCategory
 import agency.five.codebase.android.movieapp.model.MovieDetails
-import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
-import org.koin.core.component.getScopeId
 
 class MovieRepositoryImpl(
     private val movieService: MovieService,
@@ -73,8 +71,8 @@ class MovieRepositoryImpl(
             .map { favoriteMovies ->
                 apiMovieDetails.toMovieDetails(
                     isFavorite = favoriteMovies.any { it.id == apiMovieDetails.id },
-                    crew = apiMovieCredits.crew.map { it.toCrewman() },
-                    cast = apiMovieCredits.cast.map { it.toActor() }
+                    crew = apiMovieCredits.crew,
+                    cast = apiMovieCredits.cast
                 )
             }
     }.flowOn(bgDispatcher)
@@ -83,9 +81,7 @@ class MovieRepositoryImpl(
 
     override suspend fun addMovieToFavorites(movieId: Int) {
         val movie = findMovie(movieId)
-        Log.i("FIND", "ADD FAVS: ${movie?.title}")
-
-        movie?.imageUrl?.let { DbFavoriteMovie(movie.id, it) }?.let { movieDao.insertMovie(it) }
+        movie?.imageUrl?.let { movieDao.insertMovie(DbFavoriteMovie(movie.id, it)) }
     }
 
     override suspend fun removeMovieFromFavorites(movieId: Int) = movieDao.deleteMovie(movieId)
@@ -93,10 +89,7 @@ class MovieRepositoryImpl(
     override suspend fun toggleFavorite(movieId: Int) {
         runBlocking(bgDispatcher) {
             val favoriteMovies = favorites.first()
-            val favoriteMovie = favoriteMovies.filter {
-                it.id == movieId
-            }
-            if (favoriteMovie.isNotEmpty()) {
+            if (favoriteMovies.any { it.id == movieId }) {
                 removeMovieFromFavorites(movieId)
             } else {
                 addMovieToFavorites(movieId)
@@ -111,6 +104,7 @@ class MovieRepositoryImpl(
             movies.forEach {
                 if (it.id == movieId) {
                     movie = it
+                    return movie
                 }
             }
         }

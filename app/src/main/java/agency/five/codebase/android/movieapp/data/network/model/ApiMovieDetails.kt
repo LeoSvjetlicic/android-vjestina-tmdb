@@ -27,15 +27,17 @@ data class ApiMovieDetails(
     @SerialName("runtime")
     val runtime: Int?,
 ) {
-    fun toMovieDetails(isFavorite: Boolean, crew: List<Crewman>, cast: List<Actor>) = MovieDetails(
-        movie = toMovie(isFavorite),
-        voteAverage = voteAverage,
-        releaseDate = releaseDate,
-        language = language,
-        runtime = runtime ?: 0,
-        crew = crew,
-        cast = cast
-    )
+    fun toMovieDetails(isFavorite: Boolean, crew: List<ApiCrew>, cast: List<ApiCast>) =
+        MovieDetails(
+            movie = toMovie(isFavorite),
+            voteAverage = voteAverage,
+            releaseDate = releaseDate,
+            language = language,
+            runtime = runtime ?: 0,
+            crew = crew.map { it.toCrewman() },
+            cast = cast.map { it.toActor() }
+        )
+
     private fun toMovie(isFavorite: Boolean) = Movie(
         id = id,
         title = title,

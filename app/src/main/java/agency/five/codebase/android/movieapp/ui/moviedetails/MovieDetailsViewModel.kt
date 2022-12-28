@@ -17,16 +17,7 @@ class MovieDetailsViewModel(
     private val movieDetailsMapper: MovieDetailsMapper,
     private val movieId: Int
 ) : ViewModel() {
-    private val initialViewState = MovieDetailsViewState(
-        id = 1,
-        imageUrl = null,
-        voteAverage = 8.1f,
-        title = "",
-        overview = "",
-        isFavorite = false,
-        crew = emptyList(),
-        cast = emptyList()
-    )
+    private val initialViewState = MovieDetailsViewState.EMPTY
 
     val movieDetailsViewState = movieRepository.movieDetails(movieId).map { details ->
         movieDetailsMapper.toMovieDetailsViewState(details)
