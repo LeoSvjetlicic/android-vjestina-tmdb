@@ -12,7 +12,6 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import agency.five.codebase.android.movieapp.R
@@ -21,6 +20,7 @@ import agency.five.codebase.android.movieapp.ui.favorites.FavoritesMovieViewStat
 import androidx.compose.runtime.*
 import androidx.compose.ui.res.dimensionResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import org.koin.androidx.compose.viewModel
 
 val homeScreenMapper: HomeScreenMapper = HomeScreenMapperImpl()
 val movies = MoviesMock.getMoviesList()
@@ -38,32 +38,21 @@ val upcoming = listOf(
     MovieCategory.UPCOMING_TODAY,
     MovieCategory.UPCOMING_THIS_WEEK
 )
-var popularCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
-    movies = movies,
-    movieCategories = popular, selectedMovieCategory = MovieCategory.POPULAR_STREAMING
-)
-var nowPlayingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
-    movies = movies,
-    movieCategories = nowPlaying, selectedMovieCategory = MovieCategory.NOW_PLAYING_MOVIES
-)
-var upcomingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
-    movies = movies,
-    movieCategories = upcoming, selectedMovieCategory = MovieCategory.UPCOMING_TODAY
-)
 
 @Composable
 fun HomeRoute(
-    homeViewModel: HomeViewModel = viewModel(),
+    homeViewModel: HomeScreenViewModel,
     onNavigateToMovieDetails: (Int) -> Unit
 ) {
     val popularCategoryViewState: HomeMovieCategoryViewState by homeViewModel.popularCategoryViewState.collectAsState()
     val nowPlayingCategoryViewState: HomeMovieCategoryViewState by homeViewModel.nowPlayingCategoryViewState.collectAsState()
     val upcomingCategoryViewState: HomeMovieCategoryViewState by homeViewModel.upcomingCategoryViewState.collectAsState()
     HomeScreen(
-        popularCategoryViewState, nowPlayingCategoryViewState, upcomingCategoryViewState,
-        onCategoryClick = { category ->
-            homeViewModel.changeCategory(category.itemId)
-        },
+        popularCategoryViewState,
+        nowPlayingCategoryViewState,
+        upcomingCategoryViewState,
+        onCategoryClick =
+        homeViewModel::switchSelectedCategory,
         onFavoriteButtonClick = { movie ->
             homeViewModel.toggleFavorite(movie)
         },
@@ -78,7 +67,7 @@ fun HomeScreen(
     upcoming: HomeMovieCategoryViewState,
     onMovieCardClick: (Int) -> Unit,
     onFavoriteButtonClick: (Int) -> Unit,
-    onCategoryClick: (MovieCategoryLabelViewState) -> Unit,
+    onCategoryClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
@@ -117,7 +106,7 @@ fun HomeScreenPart(
     title: String,
     modifier: Modifier,
     onMovieCardClick: (Int) -> Unit,
-    onCategoryClick: (MovieCategoryLabelViewState) -> Unit,
+    onCategoryClick: (Int) -> Unit,
     onFavoriteButtonClick: (Int) -> Unit,
 ) {
     Column(modifier = modifier.padding(10.dp)) {
@@ -139,17 +128,18 @@ fun HomeScreenPart(
                 MovieCategoryLabel(
                     modifier = Modifier.padding(end = 10.dp),
                     labelViewState = it,
-                    onClick = { onCategoryClick(it) }
+                    onClick = { onCategoryClick(it.itemId) }
                 )
             }
         }
         LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(items = viewState.movies.movieCardViewStates, key = { movie ->
+            items(items = viewState.movies, key = { movie ->
                 movie.id
             }) { movie ->
                 MovieCard(
                     movie = MovieCardViewState(
-                        movie.movieViewState.imageUrl, movie.movieViewState.isFavorite
+                        imageUrl = movie.movieViewState.imageUrl,
+                        isFavorite = movie.movieViewState.isFavorite
                     ),
                     onFavoriteButtonClick = { onFavoriteButtonClick(movie.id) },
                     onMovieCardClick = { onMovieCardClick(movie.id) },

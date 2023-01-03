@@ -30,8 +30,6 @@ import coil.compose.AsyncImage
 import agency.five.codebase.android.movieapp.navigation.MOVIE_ID_KEY
 import agency.five.codebase.android.movieapp.navigation.MovieDetailsDestination
 import agency.five.codebase.android.movieapp.navigation.NavigationItem
-import agency.five.codebase.android.movieapp.ui.favorites.FavoritesViewModel
-import agency.five.codebase.android.movieapp.ui.home.HomeViewModel
 import agency.five.codebase.android.movieapp.ui.moviedetails.MovieDetailsRoute
 import agency.five.codebase.android.movieapp.ui.moviedetails.MovieDetailsViewModel
 import org.koin.androidx.compose.getViewModel
@@ -56,9 +54,6 @@ fun MainScreen() {
         } else {
             !showBottomBar
         }
-
-    val homeViewModel = getViewModel<HomeViewModel>()
-    val favoritesViewModel = getViewModel<FavoritesViewModel>()
 
     Scaffold(
         topBar = {
@@ -105,7 +100,7 @@ fun MainScreen() {
                                 MovieDetailsDestination.createNavigationRoute(it)
                             )
                         },
-                        homeViewModel = homeViewModel
+                        homeViewModel = getViewModel()
                     )
                 }
                 composable(NavigationItem.FavoritesDestination.route) {
@@ -115,7 +110,7 @@ fun MainScreen() {
                                 MovieDetailsDestination.createNavigationRoute(it)
                             )
                         },
-                        favoritesViewModel = favoritesViewModel
+                        favoritesViewModel = getViewModel()
                     )
                 }
                 composable(
